@@ -10,8 +10,8 @@ services:
       DB_HOST: db
       DB_PORT: 3306
       DB_USER: root
-      DB_PASSWORD: example
-      DB_DATABASE: mydatabase
+      DB_PASSWORD: ONV3AV320@!
+      DB_DATABASE: pokedex
     networks:
       - app-network
 
@@ -19,8 +19,8 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: mydatabase
+      MYSQL_ROOT_PASSWORD: ONV3AV320@!
+      MYSQL_DATABASE: pokedex
     ports:
       - "3306:3306"
     volumes:
