@@ -5,7 +5,7 @@ import { Entity, PrimaryColumn, Column } from 'typeorm';
 @Entity()
 export class Pokemon {
   @PrimaryColumn()
-  ids: number;  
+  id: number;  
 
   @Column()
   nom: string;
