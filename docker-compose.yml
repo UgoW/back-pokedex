@@ -1,35 +1,26 @@
+version: '3.8'
 
 services:
-  api:
-    build: .
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-    environment:
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: ONV3AV320@!
-      DB_DATABASE: pokedex
-    networks:
-      - app-network
-
-  db:
+  mysql:
     image: mysql:8.0
-    restart: always
+    container_name: mysql_pokedex
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ONV3AV320@!
-      MYSQL_DATABASE: pokedex
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
-      - mysql-data:/var/lib/mysql
-    networks:
-      - app-network
+      - mysql_data:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    container_name: adminer_pokedex
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
 
 volumes:
-  mysql-data:
-
-networks:
-  app-network:
+  mysql_data:
