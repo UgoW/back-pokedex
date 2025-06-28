@@ -46,7 +46,7 @@ export class Pokemon {
   @Column()
   miniature: string;
 
-  @Column()
+  @Column({ nullable: true })
   hires: string;
 
   @Column()
