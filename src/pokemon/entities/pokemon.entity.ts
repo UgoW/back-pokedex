@@ -1,10 +1,10 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 
 // Create ENTITY TABLE WITH COLUMN ( SCHEMA)
 @Entity()
 export class Pokemon {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;  
 
   @Column()

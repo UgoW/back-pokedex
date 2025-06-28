@@ -26,7 +26,7 @@ async function importPokemons() {
 
     for (const p of data) {
       const pokemonEntity = repo.create({
-        id: Number(p.id),
+        
         nom: p.name.french,
         type: p.type,
         espece: p.species,
