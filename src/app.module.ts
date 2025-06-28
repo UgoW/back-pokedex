@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { PokemonModule } from './pokemon/pokemon.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -24,6 +25,7 @@ import { ConfigModule } from '@nestjs/config';
       synchronize: true,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
