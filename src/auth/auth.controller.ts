@@ -1,5 +1,12 @@
 // src/auth/auth.controller.ts
-import { Controller, Post, Body, UseGuards, Request, UnauthorizedException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginUserDto } from '../users/dto/login_user.dto';
@@ -11,12 +18,18 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
-    return this.authService.register(createUserDto.username, createUserDto.hashedPassword);
+    return this.authService.register(
+      createUserDto.username,
+      createUserDto.hashedPassword,
+    );
   }
 
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto) {
-    const user = await this.authService.validateUser(loginUserDto.username, loginUserDto.password);
+    const user = await this.authService.validateUser(
+      loginUserDto.username,
+      loginUserDto.password,
+    );
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }

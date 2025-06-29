@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Pokemon } from './entities/pokemon.entity';
 import { PaginationDto } from './dto/pagination.dto';
+import { CreatePokemonDto } from './dto/create-pokemon.dto';
 
 @Injectable()
 export class PokemonService {
@@ -30,7 +31,20 @@ export class PokemonService {
     };
   }
 
-  findOne(id: number): Promise<Pokemon | null> { // Maybe modify null return ?
+  findOne(id: number): Promise<Pokemon | null> {
+    // Maybe modify null return ?
     return this.pokemonRepository.findOneBy({ id });
+  }
+
+  async create(createPokemonDto: CreatePokemonDto): Promise<Pokemon | null> {
+    const pokemon = this.pokemonRepository.create(createPokemonDto);
+    return this.pokemonRepository.save(pokemon);
+  }
+
+  async remove(id: number): Promise<void> {
+    const result = await this.pokemonRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Pokemon with id ${id} not found`);
+    }
   }
 }

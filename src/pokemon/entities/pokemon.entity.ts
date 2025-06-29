@@ -1,22 +1,21 @@
 import { Entity, PrimaryColumn, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-
 // Create ENTITY TABLE WITH COLUMN ( SCHEMA)
 @Entity()
 export class Pokemon {
   @PrimaryGeneratedColumn()
-  id: number;  
+  id: number;
 
   @Column()
   nom: string;
 
-  @Column("simple-array")
+  @Column('simple-array')
   type: string[];
 
   @Column()
   espece: string;
 
-  @Column("text")
+  @Column('text')
   description: string;
 
   @Column({ nullable: true })
@@ -28,7 +27,7 @@ export class Pokemon {
   @Column()
   poids: string;
 
-  @Column("simple-array")
+  @Column('simple-array')
   oeuf: string[];
 
   @Column()
