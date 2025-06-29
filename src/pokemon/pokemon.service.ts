@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Pokemon } from './entities/pokemon.entity';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Injectable()
 export class PokemonService {
@@ -10,8 +11,23 @@ export class PokemonService {
     private readonly pokemonRepository: Repository<Pokemon>,
   ) {}
 
-  findAll(): Promise<Pokemon[]> {
-    return this.pokemonRepository.find();
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, page = 1 } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const [pokemons, total] = await this.pokemonRepository.findAndCount({
+      take: limit,
+      skip,
+    });
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      currentPage: page,
+      totalPages,
+      totalItems: total,
+      pokemons,
+    };
   }
 
   findOne(id: number): Promise<Pokemon | null> { // Maybe modify null return ?
