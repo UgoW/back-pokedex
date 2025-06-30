@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -11,10 +12,16 @@ import {
 import { PokemonService } from './pokemon.service';
 import { PaginationDto } from './dto/pagination.dto';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
+import { SearchDto } from './dto/search.dto';
 
 @Controller('pokemons')
 export class PokemonController {
   constructor(private readonly pokemonService: PokemonService) {}
+
+  @Get('search')
+  searchByName(@Query() query: SearchDto) {
+    return this.pokemonService.searchByName(query.name);
+  }
 
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
