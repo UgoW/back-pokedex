@@ -10,7 +10,7 @@ import { UsersController } from './users.controller';
   imports: [
     TypeOrmModule.forFeature([User, Pokemon, User]),
   ],
-  controllers: [UsersController], // UsersController should be added here if it exists
+  controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],
 })
