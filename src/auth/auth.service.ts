@@ -38,10 +38,11 @@ export class AuthService {
     if (existingUser) {
       throw new UnauthorizedException('Username already taken');
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await this.usersService.createUser(username, hashedPassword);
-    return user;
-}
+    // Ici, on passe le mot de passe en clair, le hash se fait dans usersService
+    const user = await this.usersService.createUser(username, password);
+    // On ne renvoie pas le mot de passe
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
 
 }

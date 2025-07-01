@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
+import { Pokemon } from '../../pokemon/entities/pokemon.entity';
 
 @Entity()
 export class User {
@@ -10,4 +11,8 @@ export class User {
 
   @Column()
   password: string;
+
+  @ManyToMany(() => Pokemon)
+  @JoinTable()
+  favoris: Pokemon[];
 }

@@ -19,8 +19,9 @@ async function bootstrap() {
   );
   const config = new DocumentBuilder()
     .setTitle('Pokedex API')
-    .setDescription('API pour les Pokémon')
+    .setDescription('API pour les pokémons')
     .setVersion('1.0')
+    .addBearerAuth() // <-- Cette ligne est essentielle !
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
