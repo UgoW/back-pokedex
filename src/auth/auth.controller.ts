@@ -16,13 +16,13 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('register')
-  async register(@Body() createUserDto: CreateUserDto) {
-    return this.authService.register(
-      createUserDto.username,
-      createUserDto.hashedPassword,
-    );
-  }
+@Post('register')
+async register(@Body() createUserDto: CreateUserDto) {
+  return this.authService.register(
+    createUserDto.username,
+    createUserDto.password, 
+  );
+}
 
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto) {

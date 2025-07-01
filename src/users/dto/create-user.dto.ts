@@ -10,5 +10,5 @@ export class CreateUserDto {
   @IsString()
   @MinLength(6)
   @MaxLength(30)
-  hashedPassword: string;
+  password: string;
 }
