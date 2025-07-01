@@ -20,7 +20,7 @@ export class AuthController {
 async register(@Body() createUserDto: CreateUserDto) {
   return this.authService.register(
     createUserDto.username,
-    createUserDto.password, 
+    createUserDto.password,
   );
 }
 

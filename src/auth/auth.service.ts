@@ -10,16 +10,21 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
+  
+    async validateUser(username: string, password: string) {
+      const user = await this.usersService.findByUsername(username);
 
-  async validateUser(username: string, password: string) {
-    const user = await this.usersService.findByUsername(username);
-    if (user && (await bcrypt.compare(password, user.password))) {
-      // Return user info without password
-      const { password, ...result } = user;
-      return result;
+      // Ici, le user.password doit encore exister pour la comparaison
+      if (user && await bcrypt.compare(password, user.password)) {
+        // Maintenant qu'on a validé le mot de passe, on enlève le hash
+        const { password, ...result } = user;
+        return result;
+      }
+
+      return null;
     }
-    return null;
-  }
+
+
 
   async login(user: any) {
     const payload = { username: user.username, sub: user.id };
@@ -33,7 +38,10 @@ export class AuthService {
     if (existingUser) {
       throw new UnauthorizedException('Username already taken');
     }
-    const user = await this.usersService.createUser(username, password);
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await this.usersService.createUser(username, hashedPassword);
     return user;
-  }
+}
+
 }

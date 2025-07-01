@@ -1,14 +1,14 @@
-// create-user.dto.ts
-import { IsString, MinLength, MaxLength } from 'class-validator';
+// src/users/dto/create-user.dto.ts
+import { IsString, MinLength } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
+  @ApiProperty({ example: 'ashketchum' })
   @IsString()
-  @MinLength(3)
-  @MaxLength(20)
   username: string;
 
+  @ApiProperty({ example: 'pikachu123' })
   @IsString()
   @MinLength(6)
-  @MaxLength(30)
   password: string;
 }
