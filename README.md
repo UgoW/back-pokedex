@@ -56,21 +56,25 @@ src/
       docker-compose up --build -d
       ```
 
-3. **Remplir la base de données (optionnel, en local)** :
+3. **Telecharger les deps et remplir la base de données** :
 
       ```bash
-      npx ts-node src/scripts/seed.ts
+      npm i 
+      npx ts-node ./scripts/import-pokemon.ts
       ```
 
       Ce script permet de pré-remplir la base de données avec des Pokémons de test.
-
-4. **Accéder à l’API** :  
+4. lancer l'API
+   ```bash
+      nest start
+   ```
+5. **Accéder à l’API** :  
     [http://localhost:3000](http://localhost:3000)
 
-5. **Accéder à la documentation Swagger** :  
+6. **Accéder à la documentation Swagger** :  
     [http://localhost:3000/api][def2]
 
-6. **Accéder à Adminer (gestion MySQL)** :  
+7. **Accéder à Adminer (gestion MySQL)** :  
     [http://localhost:8080][def]
 
 ---
