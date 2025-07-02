@@ -62,4 +62,11 @@ nom: Raw(
     });
   }
   
+  async searchByType(type: string): Promise<Pokemon[]> {
+    if (!type) return [];
+    return this.pokemonRepository
+      .createQueryBuilder('pokemon')
+      .where('FIND_IN_SET(:type, pokemon.type)', { type })
+      .getMany();
+  }
 }
