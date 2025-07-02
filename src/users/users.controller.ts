@@ -49,12 +49,14 @@ export class UsersController {
     description: 'Liste des favoris de l’utilisateur',
     schema: {
       example: [
-        { id: 25, nom: 'Pikachu', type: ['Électrik'] },
-        { id: 4, nom: 'Salamèche', type: ['Feu'] }
+        { id: 25, nom: 'Pikachu', type: ['Électrik'], isFavori: true },
+        { id: 4, nom: 'Salamèche', type: ['Feu'], isFavori: true }
       ],
     },
   })
   async getFavoris(@Request() req) {
-    return this.usersService.getFavoris(req.user.userId);
+    const favoris = await this.usersService.getFavoris(req.user.userId);
+    // Ajoute isFavori: true à chaque Pokémon
+    return favoris.map(pokemon => ({ ...pokemon, isFavori: true }));
   }
 }

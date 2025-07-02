@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -8,18 +7,26 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
-import { ApiQuery, ApiTags, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import { ApiQuery, ApiTags, ApiResponse, ApiBody, ApiParam, ApiBearerAuth, DocumentBuilder } from '@nestjs/swagger';
 import { PokemonService } from './pokemon.service';
 import { PaginationDto } from './dto/pagination.dto';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { SearchDto } from './dto/search.dto';
 import { SearchTypeDto } from './dto/search-type.dto';
+import { Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
+import { UsersService } from '../users/users.service';
 
 @ApiTags('pokemons')
+@ApiBearerAuth()
 @Controller('pokemons')
 export class PokemonController {
-  constructor(private readonly pokemonService: PokemonService) {}
+  constructor(
+    private readonly pokemonService: PokemonService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get('search')
   @ApiQuery({
@@ -33,7 +40,7 @@ export class PokemonController {
     description: 'Liste des pokémons correspondant au nom',
     schema: {
       example: [
-        { id: 25, nom: 'Pikachu', type: ['Électrik'], ...{} },
+        { id: 25, nom: 'Pikachu', type: ['Électrik'] },
       ],
     },
   })
@@ -53,7 +60,7 @@ export class PokemonController {
     description: 'Liste des pokémons du type demandé',
     schema: {
       example: [
-        { id: 4, nom: 'Salamèche', type: ['Feu'], ...{} },
+        { id: 4, nom: 'Salamèche', type: ['Feu'] },
       ],
     },
   })
@@ -73,7 +80,7 @@ export class PokemonController {
         totalPages: 10,
         totalItems: 100,
         pokemons: [
-          { id: 1, nom: 'Bulbizarre', type: ['Plante', 'Poison'], ...{} },
+          { id: 1, nom: 'Bulbizarre', type: ['Plante', 'Poison'] },
         ],
       },
     },
@@ -88,11 +95,32 @@ export class PokemonController {
     status: 200,
     description: 'Un Pokémon par son ID',
     schema: {
-      example: { id: 25, nom: 'Pikachu', type: ['Électrik'], ...{} },
+      example: { id: 25, nom: 'Pikachu', type: ['Électrik'], isFavori: false },
     },
   })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.pokemonService.findOne(id);
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: Request,
+  ) {
+    const pokemon = await this.pokemonService.findOne(id);
+    let isFavori = false;
+
+    const authHeader = req.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      try {
+        const jwtService = new JwtService({ secret: process.env.JWT_SECRET });
+        const payload: any = jwtService.verify(token);
+        const user = await this.usersService.findById(payload.sub);
+        if (user && user.favoris.some(p => Number(p.id) === Number(id))) {
+          isFavori = true;
+        }
+      } catch (e) {
+        // Token invalide, on ignore
+      }
+    }
+
+    return { ...pokemon, isFavori };
   }
 
   @Post()
@@ -106,7 +134,6 @@ export class PokemonController {
           type: ['Eau'],
           espece: 'Pingouin',
           description: 'Un petit pingouin mignon.',
-          // ...autres champs nécessaires...
         },
       },
     },
@@ -115,7 +142,7 @@ export class PokemonController {
     status: 201,
     description: 'Pokémon créé',
     schema: {
-      example: { id: 393, nom: 'Tiplouf', type: ['Eau'], ...{} },
+      example: { id: 393, nom: 'Tiplouf', type: ['Eau'] },
     },
   })
   create(@Body() createPokemonDto: CreatePokemonDto) {
@@ -135,3 +162,10 @@ export class PokemonController {
     return this.pokemonService.remove(id);
   }
 }
+
+const config = new DocumentBuilder()
+  .setTitle('Pokedex API')
+  .setDescription('API pour les pokémons')
+  .setVersion('1.0')
+  .addBearerAuth() 
+  .build();

@@ -49,4 +49,21 @@ export class UsersService {
     if (!user) throw new NotFoundException('User not found');
     return user.favoris;
   }
+
+  async findById(id: number): Promise<User | null> {
+    return this.userRepository.findOne({
+      where: { id },
+      relations: ['favoris'],
+    });
+  }
+
+  async isFavori(userId: number, id: number): Promise<boolean> {
+    const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['favoris'] });
+    let isFavori = false;
+    if (user && user.favoris?.some(p => Number(p.id) === Number(id))) {
+      isFavori = true;
+    }
+    console.log('Favoris:', user?.favoris?.map(p => p.id), 'Cherché:', id);
+    return isFavori;
+  }
 }
