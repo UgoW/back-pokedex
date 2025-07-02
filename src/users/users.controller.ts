@@ -1,4 +1,12 @@
-import { Controller, UseGuards, Post, Delete, Get, Param, Request } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Post,
+  Delete,
+  Get,
+  Param,
+  Request,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { ApiTags, ApiBearerAuth, ApiParam, ApiResponse } from '@nestjs/swagger';
@@ -11,14 +19,19 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Post('favoris/:pokemonId')
-  @ApiParam({ name: 'pokemonId', required: true, example: 25, description: 'ID du Pokémon à ajouter en favori' })
+  @ApiParam({
+    name: 'pokemonId',
+    required: true,
+    example: 25,
+    description: 'ID du Pokémon à ajouter en favori',
+  })
   @ApiResponse({
     status: 201,
     description: 'Liste des favoris après ajout',
     schema: {
       example: [
         { id: 25, nom: 'Pikachu', type: ['Électrik'] },
-        { id: 4, nom: 'Salamèche', type: ['Feu'] }
+        { id: 4, nom: 'Salamèche', type: ['Feu'] },
       ],
     },
   })
@@ -28,14 +41,17 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('favoris/:pokemonId')
-  @ApiParam({ name: 'pokemonId', required: true, example: 25, description: 'ID du Pokémon à retirer des favoris' })
+  @ApiParam({
+    name: 'pokemonId',
+    required: true,
+    example: 25,
+    description: 'ID du Pokémon à retirer des favoris',
+  })
   @ApiResponse({
     status: 200,
     description: 'Liste des favoris après suppression',
     schema: {
-      example: [
-        { id: 4, nom: 'Salamèche', type: ['Feu'] }
-      ],
+      example: [{ id: 4, nom: 'Salamèche', type: ['Feu'] }],
     },
   })
   async removeFavori(@Request() req, @Param('pokemonId') pokemonId: number) {
@@ -50,13 +66,13 @@ export class UsersController {
     schema: {
       example: [
         { id: 25, nom: 'Pikachu', type: ['Électrik'], isFavori: true },
-        { id: 4, nom: 'Salamèche', type: ['Feu'], isFavori: true }
+        { id: 4, nom: 'Salamèche', type: ['Feu'], isFavori: true },
       ],
     },
   })
   async getFavoris(@Request() req) {
     const favoris = await this.usersService.getFavoris(req.user.userId);
     // Ajoute isFavori: true à chaque Pokémon
-    return favoris.map(pokemon => ({ ...pokemon, isFavori: true }));
+    return favoris.map((pokemon) => ({ ...pokemon, isFavori: true }));
   }
 }

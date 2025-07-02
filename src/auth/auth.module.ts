@@ -13,7 +13,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     // Loads environment variables and configuration
-    ConfigModule.forRoot(), 
+    ConfigModule.forRoot(),
     // Imports the UsersModule to manage user data
     UsersModule,
     // Configures the JWT module asynchronously using environment variables

@@ -17,7 +17,7 @@ import { ApiBody, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
  * AuthController handles user authentication endpoints such as registration, login, and profile retrieval.
  */
 @ApiTags('auth')
-@ApiBearerAuth() 
+@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -87,7 +87,10 @@ export class AuthController {
     }
     // Generates a JWT token for the authenticated user
     let access_token = await this.authService.login(user);
-    return { access_token: access_token, user :{ username: user.username, userId: user.id } };
+    return {
+      access_token: access_token,
+      user: { username: user.username, userId: user.id },
+    };
   }
 
   /**
@@ -104,7 +107,7 @@ export class AuthController {
     schema: {
       example: {
         userId: 1,
-        username: 'pikachu'
+        username: 'pikachu',
       },
     },
   })

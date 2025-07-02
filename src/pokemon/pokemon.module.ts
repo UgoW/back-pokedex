@@ -6,10 +6,7 @@ import { Pokemon } from './entities/pokemon.entity';
 import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Pokemon]),
-    UsersModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Pokemon]), UsersModule],
   controllers: [PokemonController],
   providers: [PokemonService],
 })
