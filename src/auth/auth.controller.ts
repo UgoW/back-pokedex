@@ -6,6 +6,7 @@ import {
   UseGuards,
   Request,
   UnauthorizedException,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -69,11 +70,11 @@ export class AuthController {
       throw new UnauthorizedException('Invalid credentials');
     }
     let access_token = await this.authService.login(user);
-    return { access_token : access_token , user: { user } };
+    return { access_token: access_token, user :{ username: user.username, userId: user.id } };
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('profile')
+  @Get('profile')
   @ApiResponse({
     status: 201,
     description: 'Profil utilisateur',
