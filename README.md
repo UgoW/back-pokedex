@@ -8,18 +8,20 @@ Ce dépôt contient le **backend** du projet Pokedex, développé avec [NestJS](
 
 ```
 src/
-  app.module.ts           // Module principal
-  main.ts                 // Point d'entrée de l'app
-  common/                 // Filtres, middlewares globaux
-  auth/                   // Authentification JWT, login/register
-  pokemon/                // Gestion des Pokémons (CRUD, recherche, favoris)
-  users/                  // Gestion des utilisateurs et favoris
+   app.module.ts           // Module principal
+   main.ts                 // Point d'entrée de l'app
+   common/                 // Filtres, middlewares globaux
+   auth/                   // Authentification JWT, login/register
+   pokemon/                // Gestion des Pokémons (CRUD, recherche, favoris)
+   users/                  // Gestion des utilisateurs et favoris
+   scripts/                // Scripts utilitaires (ex: remplissage de la base)
 ```
 
 - **auth/** : Authentification JWT, login, register, stratégie Passport.
 - **pokemon/** : Contrôleur, service, entités, DTOs pour les Pokémons.
 - **users/** : Contrôleur, service, entités, DTOs pour les utilisateurs et leurs favoris.
 - **common/** : Filtres d’exception globaux.
+- **scripts/** : Scripts pour remplir la base de données en local.
 
 ---
 
@@ -39,29 +41,37 @@ src/
 
 1. **Configurer le fichier `.env`** (exemple fourni) :
 
-    ```
-    DB_HOST=mysql
-    DB_PORT=3306
-    DB_USER=nest_user
-    DB_PASSWORD=monmotdepasse
-    DB_NAME=pokedex
-    JWT_SECRET=une_clé_secrète_complexe
-    ```
+      ```
+      DB_HOST=mysql
+      DB_PORT=3306
+      DB_USER=nest_user
+      DB_PASSWORD=monmotdepasse
+      DB_NAME=pokedex
+      JWT_SECRET=une_clé_secrète_complexe
+      ```
 
 2. **Lancer tous les services** :
 
-    ```bash
-    docker-compose up --build -d
-    ```
+      ```bash
+      docker-compose up --build -d
+      ```
 
-3. **Accéder à l’API** :  
-   [http://localhost:3000](http://localhost:3000)
+3. **Remplir la base de données (optionnel, en local)** :
 
-4. **Accéder à la documentation Swagger** :  
-   [http://localhost:3000/api](http://localhost:3000/api)
+      ```bash
+      npx ts-node src/scripts/seed.ts
+      ```
 
-5. **Accéder à Adminer (gestion MySQL)** :  
-   [http://localhost:8080](http://localhost:8080)
+      Ce script permet de pré-remplir la base de données avec des Pokémons de test.
+
+4. **Accéder à l’API** :  
+    [http://localhost:3000](http://localhost:3000)
+
+5. **Accéder à la documentation Swagger** :  
+    [http://localhost:3000/api][def2]
+
+6. **Accéder à Adminer (gestion MySQL)** :  
+    [http://localhost:8080][def]
 
 ---
 
@@ -74,14 +84,5 @@ src/
 - **Ajouter un favori** : `/users/favoris/:pokemonId` (POST, JWT requis)
 - **Lister ses favoris** : `/users/favoris` (GET, JWT requis)
 
----
-
-## Contribution
-
-Toute PR ou suggestion est la bienvenue !
-
----
-
-## Licence
-
-MIT
+[def]: http://localhost:8080
+[def2]: http://localhost:3000/api
