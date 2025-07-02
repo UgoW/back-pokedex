@@ -1,98 +1,88 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Pokedex API – Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Ce dépôt contient le **backend** du projet Pokedex, développé avec [NestJS](https://nestjs.com/) et [TypeORM](https://typeorm.io/) pour la gestion des Pokémons, des utilisateurs et de l’authentification.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Structure du projet
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+```
+src/
+   app.module.ts           // Module principal
+   main.ts                 // Point d'entrée de l'app
+   common/                 // Filtres, middlewares globaux
+   auth/                   // Authentification JWT, login/register
+   pokemon/                // Gestion des Pokémons (CRUD, recherche, favoris)
+   users/                  // Gestion des utilisateurs et favoris
+   scripts/                // Scripts utilitaires (ex: remplissage de la base)
 ```
 
-## Compile and run the project
+- **auth/** : Authentification JWT, login, register, stratégie Passport.
+- **pokemon/** : Contrôleur, service, entités, DTOs pour les Pokémons.
+- **users/** : Contrôleur, service, entités, DTOs pour les utilisateurs et leurs favoris.
+- **common/** : Filtres d’exception globaux.
+- **scripts/** : Scripts pour remplir la base de données en local.
 
-```bash
-# development
-$ npm run start
+---
 
-# watch mode
-$ npm run start:dev
+## Fonctionnalités principales
 
-# production mode
-$ npm run start:prod
-```
+- **CRUD Pokémon** : Ajouter, lister, rechercher, supprimer des Pokémons.
+- **Recherche avancée** : Par nom (avec pagination) ou par type (avec pagination).
+- **Gestion des utilisateurs** : Inscription, connexion sécurisée (JWT).
+- **Favoris** : Ajouter/retirer des Pokémons favoris pour chaque utilisateur, lister ses favoris.
+- **Swagger** : Documentation interactive disponible sur `/api`.
+- **Sécurité** : Authentification JWT, gestion des erreurs centralisée.
+- **Dockerisé** : Prêt à être lancé avec Docker Compose (API, MySQL, Adminer).
 
-## Run tests
+---
 
-```bash
-# unit tests
-$ npm run test
+## Lancer le projet en local (avec Docker)
 
-# e2e tests
-$ npm run test:e2e
+1. **Configurer le fichier `.env`** (exemple fourni) :
 
-# test coverage
-$ npm run test:cov
-```
+      ```
+      DB_HOST=mysql
+      DB_PORT=3306
+      DB_USER=nest_user
+      DB_PASSWORD=monmotdepasse
+      DB_NAME=pokedex
+      JWT_SECRET=une_clé_secrète_complexe
+      ```
 
-## Deployment
+2. **Lancer tous les services** :
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+      ```bash
+      docker-compose up --build -d
+      ```
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+3. **Remplir la base de données (optionnel, en local)** :
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+      ```bash
+      npx ts-node src/scripts/seed.ts
+      ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+      Ce script permet de pré-remplir la base de données avec des Pokémons de test.
 
-## Resources
+4. **Accéder à l’API** :  
+    [http://localhost:3000](http://localhost:3000)
 
-Check out a few resources that may come in handy when working with NestJS:
+5. **Accéder à la documentation Swagger** :  
+    [http://localhost:3000/api][def2]
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+6. **Accéder à Adminer (gestion MySQL)** :  
+    [http://localhost:8080][def]
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Exemples d’utilisation
 
-## Stay in touch
+- **Inscription / Connexion** : `/auth/register`, `/auth/login`
+- **Lister les Pokémons** : `/pokemons`
+- **Rechercher par nom** : `/pokemons/search?name=Pikachu&page=1&limit=10`
+- **Rechercher par type** : `/pokemons/search-by-type?type=Feu&page=1&limit=10`
+- **Ajouter un favori** : `/users/favoris/:pokemonId` (POST, JWT requis)
+- **Lister ses favoris** : `/users/favoris` (GET, JWT requis)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+[def]: http://localhost:8080
+[def2]: http://localhost:3000/api

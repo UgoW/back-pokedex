@@ -6,8 +6,17 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
+/**
+ * AllExceptionsFilter handles all uncaught exceptions and formats the error response.
+ * It ensures a consistent error structure for HTTP responses.
+ */
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
+  /**
+   * Catches exceptions thrown in the application and sends a formatted JSON response.
+   * @param exception The exception that was thrown.
+   * @param host The arguments host containing request and response objects.
+   */
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
@@ -23,7 +32,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal server error';
 
-    // Pour uniformiser le format de retour
+    // Standardizes the error response format
     response.status(status).json({
       success: false,
       statusCode: status,

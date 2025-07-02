@@ -85,5 +85,20 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "docker": {
+    "image": "node:18-alpine",
+    "workdir": "/app",
+    "ports": [
+      "3000:3000"
+    ],
+    "volumes": [
+      ".:/app"
+    ],
+    "commands": [
+      "npm install",
+      "npm run build",
+      "node dist/main.js"
+    ]
   }
 }

@@ -31,12 +31,13 @@ export class PokemonService {
       pokemons,
     };
   }
-  
-  findOne(id: number): Promise<Pokemon | null> { // Maybe modify null return ?
+
+  findOne(id: number): Promise<Pokemon | null> {
+    // Maybe modify null return ?
     return this.pokemonRepository.findOneBy({ id });
   }
-  
-    async create(createPokemonDto: CreatePokemonDto): Promise<Pokemon | null> {
+
+  async create(createPokemonDto: CreatePokemonDto): Promise<Pokemon | null> {
     const pokemon = this.pokemonRepository.create(createPokemonDto);
     return this.pokemonRepository.save(pokemon);
   }
@@ -49,19 +50,17 @@ export class PokemonService {
   }
 
   async searchByName(name: string): Promise<Pokemon[]> {
-  if (!name) return [];
+    if (!name) return [];
 
-  return this.pokemonRepository.find({
-    where: {
-nom: Raw(
-      alias => `${alias} COLLATE utf8mb4_unicode_ci LIKE :name`,
-      { name: `%${name}%` }
-    )
-
+    return this.pokemonRepository.find({
+      where: {
+        nom: Raw((alias) => `${alias} COLLATE utf8mb4_unicode_ci LIKE :name`, {
+          name: `%${name}%`,
+        }),
       },
     });
   }
-  
+
   async searchByType(type: string): Promise<Pokemon[]> {
     if (!type) return [];
     return this.pokemonRepository
@@ -71,15 +70,15 @@ nom: Raw(
   }
 
   async searchByNamePaginated(name: string, page = 1, limit = 10) {
-    if (!name) return { currentPage: 1, totalPages: 0, totalItems: 0, pokemons: [] };
+    if (!name)
+      return { currentPage: 1, totalPages: 0, totalItems: 0, pokemons: [] };
     const skip = (Number(page) - 1) * Number(limit);
 
     const [pokemons, total] = await this.pokemonRepository.findAndCount({
       where: {
-        nom: Raw(
-          alias => `${alias} COLLATE utf8mb4_unicode_ci LIKE :name`,
-          { name: `%${name}%` }
-        )
+        nom: Raw((alias) => `${alias} COLLATE utf8mb4_unicode_ci LIKE :name`, {
+          name: `%${name}%`,
+        }),
       },
       skip,
       take: Number(limit),
@@ -95,7 +94,8 @@ nom: Raw(
   }
 
   async searchByTypePaginated(type: string, page = 1, limit = 10) {
-    if (!type) return { currentPage: 1, totalPages: 0, totalItems: 0, pokemons: [] };
+    if (!type)
+      return { currentPage: 1, totalPages: 0, totalItems: 0, pokemons: [] };
     const skip = (Number(page) - 1) * Number(limit);
 
     const [pokemons, total] = await this.pokemonRepository

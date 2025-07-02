@@ -9,7 +9,15 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { ApiQuery, ApiTags, ApiResponse, ApiBody, ApiParam, ApiBearerAuth, DocumentBuilder } from '@nestjs/swagger';
+import {
+  ApiQuery,
+  ApiTags,
+  ApiResponse,
+  ApiBody,
+  ApiParam,
+  ApiBearerAuth,
+  DocumentBuilder,
+} from '@nestjs/swagger';
 import { PokemonService } from './pokemon.service';
 import { PaginationDto } from './dto/pagination.dto';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
@@ -29,7 +37,12 @@ export class PokemonController {
   ) {}
 
   @Get('search')
-  @ApiQuery({ name: 'name', required: true, description: 'Nom du Pokémon à rechercher', example: 'Pikachu' })
+  @ApiQuery({
+    name: 'name',
+    required: true,
+    description: 'Nom du Pokémon à rechercher',
+    example: 'Pikachu',
+  })
   @ApiQuery({ name: 'page', required: false, example: 1 })
   @ApiQuery({ name: 'limit', required: false, example: 10 })
   @ApiResponse({
@@ -40,18 +53,25 @@ export class PokemonController {
         currentPage: 1,
         totalPages: 1,
         totalItems: 1,
-        pokemons: [
-          { id: 25, nom: 'Pikachu', type: ['Électrik'] },
-        ],
+        pokemons: [{ id: 25, nom: 'Pikachu', type: ['Électrik'] }],
       },
     },
   })
   async searchByName(@Query() query: SearchDto & PaginationDto) {
-    return this.pokemonService.searchByNamePaginated(query.name, query.page, query.limit);
+    return this.pokemonService.searchByNamePaginated(
+      query.name,
+      query.page,
+      query.limit,
+    );
   }
 
   @Get('search-by-type')
-  @ApiQuery({ name: 'type', required: true, description: 'Type du Pokémon (ex: Feu, Eau)', example: 'Feu' })
+  @ApiQuery({
+    name: 'type',
+    required: true,
+    description: 'Type du Pokémon (ex: Feu, Eau)',
+    example: 'Feu',
+  })
   @ApiQuery({ name: 'page', required: false, example: 1 })
   @ApiQuery({ name: 'limit', required: false, example: 10 })
   @ApiResponse({
@@ -62,14 +82,16 @@ export class PokemonController {
         currentPage: 1,
         totalPages: 1,
         totalItems: 1,
-        pokemons: [
-          { id: 4, nom: 'Salamèche', type: ['Feu'] },
-        ],
+        pokemons: [{ id: 4, nom: 'Salamèche', type: ['Feu'] }],
       },
     },
   })
   async searchByType(@Query() query: SearchTypeDto & PaginationDto) {
-    return this.pokemonService.searchByTypePaginated(query.type, query.page, query.limit);
+    return this.pokemonService.searchByTypePaginated(
+      query.type,
+      query.page,
+      query.limit,
+    );
   }
 
   @Get()
@@ -83,9 +105,7 @@ export class PokemonController {
         currentPage: 1,
         totalPages: 10,
         totalItems: 100,
-        pokemons: [
-          { id: 1, nom: 'Bulbizarre', type: ['Plante', 'Poison'] },
-        ],
+        pokemons: [{ id: 1, nom: 'Bulbizarre', type: ['Plante', 'Poison'] }],
       },
     },
   })
@@ -94,7 +114,12 @@ export class PokemonController {
   }
 
   @Get(':id')
-  @ApiParam({ name: 'id', required: true, example: 25, description: 'ID du Pokémon' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    example: 25,
+    description: 'ID du Pokémon',
+  })
   @ApiResponse({
     status: 200,
     description: 'Un Pokémon par son ID',
@@ -102,10 +127,7 @@ export class PokemonController {
       example: { id: 25, nom: 'Pikachu', type: ['Électrik'], isFavori: false },
     },
   })
-  async findOne(
-    @Param('id', ParseIntPipe) id: number,
-    @Req() req: Request,
-  ) {
+  async findOne(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
     const pokemon = await this.pokemonService.findOne(id);
     let isFavori = false;
 
@@ -116,7 +138,7 @@ export class PokemonController {
         const jwtService = new JwtService({ secret: process.env.JWT_SECRET });
         const payload: any = jwtService.verify(token);
         const user = await this.usersService.findById(payload.sub);
-        if (user && user.favoris.some(p => Number(p.id) === Number(id))) {
+        if (user && user.favoris.some((p) => Number(p.id) === Number(id))) {
           isFavori = true;
         }
       } catch (e) {
@@ -154,7 +176,12 @@ export class PokemonController {
   }
 
   @Delete(':id')
-  @ApiParam({ name: 'id', required: true, example: 25, description: 'ID du Pokémon à supprimer' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    example: 25,
+    description: 'ID du Pokémon à supprimer',
+  })
   @ApiResponse({
     status: 200,
     description: 'Pokémon supprimé',
@@ -171,5 +198,5 @@ const config = new DocumentBuilder()
   .setTitle('Pokedex API')
   .setDescription('API pour les pokémons')
   .setVersion('1.0')
-  .addBearerAuth() 
+  .addBearerAuth()
   .build();
