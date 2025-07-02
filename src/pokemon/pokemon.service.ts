@@ -69,4 +69,48 @@ nom: Raw(
       .where('FIND_IN_SET(:type, pokemon.type)', { type })
       .getMany();
   }
+
+  async searchByNamePaginated(name: string, page = 1, limit = 10) {
+    if (!name) return { currentPage: 1, totalPages: 0, totalItems: 0, pokemons: [] };
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const [pokemons, total] = await this.pokemonRepository.findAndCount({
+      where: {
+        nom: Raw(
+          alias => `${alias} COLLATE utf8mb4_unicode_ci LIKE :name`,
+          { name: `%${name}%` }
+        )
+      },
+      skip,
+      take: Number(limit),
+    });
+
+    const totalPages = Math.ceil(total / Number(limit));
+    return {
+      currentPage: Number(page),
+      totalPages,
+      totalItems: total,
+      pokemons,
+    };
+  }
+
+  async searchByTypePaginated(type: string, page = 1, limit = 10) {
+    if (!type) return { currentPage: 1, totalPages: 0, totalItems: 0, pokemons: [] };
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const [pokemons, total] = await this.pokemonRepository
+      .createQueryBuilder('pokemon')
+      .where('FIND_IN_SET(:type, pokemon.type)', { type })
+      .skip(skip)
+      .take(Number(limit))
+      .getManyAndCount();
+
+    const totalPages = Math.ceil(total / Number(limit));
+    return {
+      currentPage: Number(page),
+      totalPages,
+      totalItems: total,
+      pokemons,
+    };
+  }
 }

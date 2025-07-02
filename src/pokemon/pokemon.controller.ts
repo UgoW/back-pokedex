@@ -29,43 +29,47 @@ export class PokemonController {
   ) {}
 
   @Get('search')
-  @ApiQuery({
-    name: 'name',
-    required: true,
-    description: 'Nom du Pokémon à rechercher',
-    example: 'Pikachu',
-  })
+  @ApiQuery({ name: 'name', required: true, description: 'Nom du Pokémon à rechercher', example: 'Pikachu' })
+  @ApiQuery({ name: 'page', required: false, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, example: 10 })
   @ApiResponse({
     status: 200,
-    description: 'Liste des pokémons correspondant au nom',
+    description: 'Liste paginée des pokémons correspondant au nom',
     schema: {
-      example: [
-        { id: 25, nom: 'Pikachu', type: ['Électrik'] },
-      ],
+      example: {
+        currentPage: 1,
+        totalPages: 1,
+        totalItems: 1,
+        pokemons: [
+          { id: 25, nom: 'Pikachu', type: ['Électrik'] },
+        ],
+      },
     },
   })
-  searchByName(@Query() query: SearchDto) {
-    return this.pokemonService.searchByName(query.name);
+  async searchByName(@Query() query: SearchDto & PaginationDto) {
+    return this.pokemonService.searchByNamePaginated(query.name, query.page, query.limit);
   }
 
   @Get('search-by-type')
-  @ApiQuery({
-    name: 'type',
-    required: true,
-    description: 'Type du Pokémon (ex: Feu, Eau)',
-    example: 'Feu',
-  })
+  @ApiQuery({ name: 'type', required: true, description: 'Type du Pokémon (ex: Feu, Eau)', example: 'Feu' })
+  @ApiQuery({ name: 'page', required: false, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, example: 10 })
   @ApiResponse({
     status: 200,
-    description: 'Liste des pokémons du type demandé',
+    description: 'Liste paginée des pokémons du type demandé',
     schema: {
-      example: [
-        { id: 4, nom: 'Salamèche', type: ['Feu'] },
-      ],
+      example: {
+        currentPage: 1,
+        totalPages: 1,
+        totalItems: 1,
+        pokemons: [
+          { id: 4, nom: 'Salamèche', type: ['Feu'] },
+        ],
+      },
     },
   })
-  searchByType(@Query() query: SearchTypeDto) {
-    return this.pokemonService.searchByType(query.type);
+  async searchByType(@Query() query: SearchTypeDto & PaginationDto) {
+    return this.pokemonService.searchByTypePaginated(query.type, query.page, query.limit);
   }
 
   @Get()
