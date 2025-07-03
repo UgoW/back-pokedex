@@ -2,6 +2,8 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { Pokemon } from '../src/pokemon/entities/pokemon.entity';
 import * as dotenv from 'dotenv';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as rawData from './data/pokedex.json';
 
 dotenv.config();
@@ -19,14 +21,45 @@ const AppDataSource = new DataSource({
   synchronize: true,
 });
 
+async function executeSQLFile(filePath: string) {
+  try {
+    const sql = fs.readFileSync(filePath, 'utf-8');
+    await AppDataSource.query(sql);
+    console.log('✅ Script SQL exécuté avec succès.');
+    return true;
+  } catch (err) {
+    console.error('⚠️ Erreur lors de l\'exécution du fichier SQL :', err);
+    return false;
+  }
+}
+
 async function importPokemons() {
+  if (!process.env.DB_HOST || !process.env.DB_PORT || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_NAME) {
+    console.error('❌ Veuillez configurer les variables d\'environnement pour la base de données.');
+    process.exit(1);
+  }
+
   try {
     await AppDataSource.initialize();
+
+    // Tentative d'exécution du script SQL
+    const sqlPath = path.resolve('./pokemon.sql');
+    if (fs.existsSync(sqlPath)) {
+      const success = await executeSQLFile(sqlPath);
+      if (success) {
+        process.exit(0);
+      } else {
+        console.log('➡️ Passage à l\'importation JSON suite à l\'échec SQL...');
+      }
+    } else {
+      console.log('ℹ️ Aucun fichier SQL trouvé. Importation JSON en cours...');
+    }
+
+    // Import JSON
     const repo = AppDataSource.getRepository(Pokemon);
 
     for (const p of data) {
       const pokemonEntity = repo.create({
-        
         nom: p.name.french,
         type: p.type,
         espece: p.species,
@@ -52,7 +85,7 @@ async function importPokemons() {
       await repo.save(pokemonEntity);
     }
 
-    console.log('✅ Import terminé avec succès.');
+    console.log('✅ Import JSON terminé avec succès.');
     process.exit(0);
   } catch (err) {
     console.error('❌ Erreur import :', err);
